@@ -93,6 +93,7 @@ export class Task {
     promptTokenCount?: number;
     candidatesTokenCount?: number;
     totalTokenCount?: number;
+    cachedContentTokenCount?: number;
   };
   private get isYoloMatch(): boolean {
     return (
@@ -279,7 +280,7 @@ export class Task {
       userTier?: UserTierId;
       error?: string;
       traceId?: string;
-      usageMetadata?: unknown;
+      usageMetadata?: Task['usageMetadata'];
     } = {
       coderAgent: coderAgentMessage,
       model: this.modelInfo || this.config.getModel(),
@@ -878,6 +879,7 @@ export class Task {
         }
         break;
       case GeminiEventType.ModelInfo:
+        this.usageMetadata = undefined;
         this.modelInfo = event.value;
         break;
       case GeminiEventType.Retry:
